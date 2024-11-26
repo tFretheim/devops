@@ -1,0 +1,60 @@
+### Serverless, Function as a Service vs Container-teknologi
+Å velge mellom serverless arkitekktur med såkalt Function-as-a-service (faas)-tjenester som AWS Lambda 
+eller en arkitektur basert på mikrotjenester er en viktig beslutning å ta med tanke på innvirkningen det
+ har for hvordan systemer utvikles, driftes eller vedlikeholdes. Her drøfter jeg implikasjonene av begge 
+ tilnærmingene for DevOps-prinsipper, inkludert automatisering og kontinuerlig levering (ci/cd), skalerbarhet,
+kostnadskontroll, eierskap, ansvar og overvåkning.
+
+### Automatisering og kontinuerlig levering (CI/CD)
+CI/CD-prosesser forenkles ofte av serverless arkitektur, noe som minimerer behovet for å administrere 
+infrastruktur i etterkant. Ved å bruke tjenester som AWS SAM eller Serverless Framework,
+ distribueres funksjoner til en skytjeneste (for eksempel AWS Lambda) som administrerer
+  mye av infrastrukturen under. Selv om dette lar utviklere konsentrere seg mer om koding,
+kan det også føre til komplikasjoner når mange små, individuelle funksjoner krever sine egne versjoner,
+ tester og distribusjoner. Å emulere skytjenester gjør ofte lokal testing vanskelig.
+
+I motsetning til dette som Serverless arkitektur, gir en arkitektur basert på mikrotjenester
+ større kontroll over infrastrukturen. Ved å bruke containere som Docker kan det etableres 
+ enhetlige miljøer gjennom utviklings-, test- og produksjonsfaser. Selv om dette er til 
+ fordel for større systemer, krever det en mer intrikat rørledning for bygging, testing og 
+ distribusjon av containere. Selv om orkestreringstjenester som Kubernetes gir deg enda 
+ mer kompleksitet, øker de også fleksibiliteten din.
+
+### Observability (Overvåkning)
+Selv om overvåking spiller en viktig rolle i begge metodene, nærmer de seg hver for seg på
+forskjellige måter.
+
+I en serverløs arkitektur leveres standardløsninger for logging og metrikk
+ av skytjenester som AWS CloudWatch. Selv om dette gjør det administrative
+  ansvaret mindre, vil den korte levetiden til funksjoner og deres distribuerte 
+  natur gjøre det mer vanskelig å korrelere logger  på tvers av systemer. For å 
+  effektivt feilsøke og finne såkalte bottlenecks i et serverløst system, blir fordelte
+   sporingssystemer avgjørende.
+
+For mikrotjenester er overvåkning mer manuell, men gir til gjengjeld mer kontroll. Verktøyer som
+ Prometheus og Grafana gir en mer detaljert innsikt, og man kan implementere loggsystemer som ELK-stack
+  (Elasticsearch, Logstash, Kibana). Dette krever imidlertid betydelig arbeid for å sette opp og 
+  vedlikeholde.
+
+### Skalerbarhet og kostnadskontroll
+Skalerbarhet er et område der serverless ofte skinner ovenfor mikrotjenester. Tjenester som AWS Lambda skalerer
+ automatisk basert på belastning, noe som er svært nyttig for applikasjoner med uforutsigbar og varierende trafikk.
+  Kostnadsmodellen for serverless er også attraktiv fordi man kun betaler for faktiske kjøringer av funksjoner, 
+  fakturert på millisekundnivå. Ulempen er at ved svært høyt trykk kan kostnadene eskalere raskt, og det finnes
+   begrensninger i samtidige kjøringer og maksimal kjøretid for funksjoner.
+Mikrotjenester gir mer kontroll over ressursbruk gjennom horisontal eller vertikal skalering.
+ Dette kan være mer kostnadseffektivt for applikasjoner med jevn trafikk, men det krever
+  manuell administrasjon av kapasitet og autoskalering. Overprovisjonering av ressurser kan også 
+  føre til økte kostnader, noe som krever nøye overvåking.
+
+### Eierskap og ansvar
+I en serverless-arkitektur har DevOps-teamet mindre ansvar for infrastrukturen når det gjelder oppetid 
+og sikkerhet, da dette håndteres av skyleverandøren. Dette gir teamet mer tid til å fokusere på applikasjonslogikk,
+ men samtidig innebærer det mindre kontroll over ytelse og feilsøking. Feil i infrastrukturen kan være vanskeligere
+  å oppdage og rette, ettersom teamet ikke har tilgang til det underliggende miljøet.
+I en mikrotjenestebasert arkitektur har teamet derimot full kontroll over både
+ applikasjon og infrastruktur. Dette gir mer fleksibilitet til å optimalisere ytelsen og raskt
+  identifisere problemer, men det medfører også et større ansvar for sikkerhet, oppetid og vedlikehold.
+   Det kan derfor kreve spesialiserte ferdigheter og flere ressurser for å håndtere alle aspektene ved 
+   arkitekturen.
+
